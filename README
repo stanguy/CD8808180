@@ -1,0 +1,7 @@
+
+    % ./CDTestCase -c
+    % time ./CDTestCase
+    % echo "CREATE INDEX fullstoptime on ZSTOPTIME ( zline, zstop, zpayload1 );" | sqlite3 ./CDTestCase.sqlite
+    % time ./CDTestCase
+
+=> Profit!
