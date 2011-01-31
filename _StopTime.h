@@ -4,8 +4,12 @@
 #import <CoreData/CoreData.h>
 
 
+@class Direction;
 @class Line;
 @class Stop;
+
+
+
 
 
 
@@ -21,24 +25,55 @@
 
 
 
-@property (nonatomic, retain) NSNumber *payload1;
+@property (nonatomic, retain) NSNumber *arrival;
 
-@property int payload1Value;
-- (int)payload1Value;
-- (void)setPayload1Value:(int)value_;
+@property int arrivalValue;
+- (int)arrivalValue;
+- (void)setArrivalValue:(int)value_;
 
-//- (BOOL)validatePayload1:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateArrival:(id*)value_ error:(NSError**)error_;
 
 
 
-@property (nonatomic, retain) NSNumber *payload2;
+@property (nonatomic, retain) NSNumber *trip_id;
 
-@property int payload2Value;
-- (int)payload2Value;
-- (void)setPayload2Value:(int)value_;
+@property int trip_idValue;
+- (int)trip_idValue;
+- (void)setTrip_idValue:(int)value_;
 
-//- (BOOL)validatePayload2:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateTrip_id:(id*)value_ error:(NSError**)error_;
 
+
+
+@property (nonatomic, retain) NSNumber *calendar;
+
+@property short calendarValue;
+- (short)calendarValue;
+- (void)setCalendarValue:(short)value_;
+
+//- (BOOL)validateCalendar:(id*)value_ error:(NSError**)error_;
+
+
+
+@property (nonatomic, retain) NSString *trip_bearing;
+
+//- (BOOL)validateTrip_bearing:(id*)value_ error:(NSError**)error_;
+
+
+
+@property (nonatomic, retain) NSNumber *departure;
+
+@property int departureValue;
+- (int)departureValue;
+- (void)setDepartureValue:(int)value_;
+
+//- (BOOL)validateDeparture:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, retain) Direction* direction;
+//- (BOOL)validateDirection:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -53,6 +88,11 @@
 
 
 
++ (NSArray*)fetchStopTimeComing:(NSManagedObjectContext*)moc_ ;
++ (NSArray*)fetchStopTimeComing:(NSManagedObjectContext*)moc_ error:(NSError**)error_;
+
+
+
 @end
 
 @interface _StopTime (CoreDataGeneratedAccessors)
@@ -61,19 +101,42 @@
 
 @interface _StopTime (CoreDataGeneratedPrimitiveAccessors)
 
-- (NSNumber*)primitivePayload1;
-- (void)setPrimitivePayload1:(NSNumber*)value;
+- (NSNumber*)primitiveArrival;
+- (void)setPrimitiveArrival:(NSNumber*)value;
 
-- (int)primitivePayload1Value;
-- (void)setPrimitivePayload1Value:(int)value_;
+- (int)primitiveArrivalValue;
+- (void)setPrimitiveArrivalValue:(int)value_;
 
 
-- (NSNumber*)primitivePayload2;
-- (void)setPrimitivePayload2:(NSNumber*)value;
+- (NSNumber*)primitiveTrip_id;
+- (void)setPrimitiveTrip_id:(NSNumber*)value;
 
-- (int)primitivePayload2Value;
-- (void)setPrimitivePayload2Value:(int)value_;
+- (int)primitiveTrip_idValue;
+- (void)setPrimitiveTrip_idValue:(int)value_;
 
+
+- (NSNumber*)primitiveCalendar;
+- (void)setPrimitiveCalendar:(NSNumber*)value;
+
+- (short)primitiveCalendarValue;
+- (void)setPrimitiveCalendarValue:(short)value_;
+
+
+- (NSString*)primitiveTrip_bearing;
+- (void)setPrimitiveTrip_bearing:(NSString*)value;
+
+
+- (NSNumber*)primitiveDeparture;
+- (void)setPrimitiveDeparture:(NSNumber*)value;
+
+- (int)primitiveDepartureValue;
+- (void)setPrimitiveDepartureValue:(int)value_;
+
+
+
+
+- (Direction*)primitiveDirection;
+- (void)setPrimitiveDirection:(Direction*)value;
 
 
 

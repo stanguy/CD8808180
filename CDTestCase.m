@@ -11,15 +11,22 @@
 #import "Line.h"
 #import "Stop.h"
 #import "StopTime.h"
+#import "Direction.h"
+#import "Poi.h"
+#import "ClosePoi.h"
 
 NSManagedObjectModel *managedObjectModel();
 NSManagedObjectContext *managedObjectContext();
 
 
-int kNbStops = 400;
-int kNbLines = 80;
-int kNbStopPerLine = 30;
+int kNbStops = 100;
+int kNbLines = 10;
+int kNbStopPerLine = 50;
 int kNbStopTime = 250;
+int kNbBikes = 50;
+int kNbPos = 50;
+int kNbMetro = 15;
+int kNbPoiPerStop = 5;
 
 int runQuery( Line* line, Stop* stop ) {
     NSManagedObjectContext *context = managedObjectContext();
@@ -27,6 +34,27 @@ int runQuery( Line* line, Stop* stop ) {
     NSArray* stop_times = [StopTime findAllTimesInContext:context atLine:line atStop:stop between:[NSNumber numberWithInt:50] and:[NSNumber numberWithInt:100]];
     return [stop_times count];
 }
+
+
+void flushContext() {
+	NSManagedObjectContext* context = managedObjectContext();
+    // Save the managed object context
+    NSError *error = nil;    
+    if (![context save:&error]) {
+        NSLog(@"Error while saving\n%@",
+              ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown Error");
+        if ( [error code] == NSValidationMultipleErrorsError ) {
+            NSArray *detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            NSUInteger i, displayErrors = [detailedErrors count];
+            for( i = 0; i < displayErrors; ++i ) {
+                NSLog(@"%@\n", [[detailedErrors objectAtIndex:i] localizedDescription]);
+            }
+        }
+        exit(1);
+    }
+    //[context reset];
+}
+
 
 int main (int argc, const char * argv[]) {
 	
@@ -42,14 +70,55 @@ int main (int argc, const char * argv[]) {
     if ( argc > 1 && 0 == strcmp( "-c", argv[1] ) ) {
         NSMutableArray* stops = [NSMutableArray arrayWithCapacity:kNbStops];
         NSMutableArray* lines = [NSMutableArray arrayWithCapacity:kNbLines];
+		NSMutableArray* pois = [NSMutableArray arrayWithCapacity:(kNbBikes+kNbPos+kNbMetro)];
+		for( int i = 0; i < kNbBikes; ++i ) {
+			Poi* poi = [Poi insertInManagedObjectContext:context];
+			poi.name = [NSString stringWithFormat:@"Bike #%d", i];
+			poi.type = @"bike";
+			[pois addObject:poi];
+		}
+		for( int i = 0; i < kNbPos; ++i ) {
+			Poi* poi = [Poi insertInManagedObjectContext:context];
+			poi.name = [NSString stringWithFormat:@"Pos #%d", i];
+			poi.type = @"pos";
+			[pois addObject:poi];
+		}
+		for( int i = 0; i < kNbBikes; ++i ) {
+			Poi* poi = [Poi insertInManagedObjectContext:context];
+			poi.name = [NSString stringWithFormat:@"Metro #%d", i];
+			poi.type = @"metro";
+			[pois addObject:poi];
+		}
         for( int i = 0; i < kNbStops; ++i ) {
             Stop* stop = [Stop insertInManagedObjectContext:context];
+			stop.name = [NSString stringWithFormat:@"Stop #%d", i];
+			stop.src_id = [NSString stringWithFormat:@"%d", i];
+			stop.accessibleValue = NO;
+			for( int j = 0; j < kNbPoiPerStop; ++j ) {
+				srand( time( NULL ) + i * j );
+                Poi* poi = [pois objectAtIndex:(rand() % ([pois count] - 1))];
+				ClosePoi* cpoi = [ClosePoi insertInManagedObjectContext:context];
+				cpoi.poi = poi;
+				cpoi.distance = [NSNumber numberWithInt:12];
+				[stop incCounter:poi.type];
+				[[stop close_poisSet] addObject:cpoi];
+			}
             [stops addObject:stop];
         }
         for( int i = 0; i < kNbLines; ++i ) {
             Line* line = [Line insertInManagedObjectContext:context];
-            line.id = [NSNumber numberWithInt:0];
+            //line.id = [NSNumber numberWithInt:0];
+			line.short_name = [NSString stringWithFormat:@"%d", i];
+			line.long_name = [NSString stringWithFormat:@"Ligne %d", i];
+			line.usage = @"urban";
+			line.src_id =  [NSString stringWithFormat:@"%02d", i];
+			line.accessibleValue = NO;
             [lines addObject:line];
+			
+			Direction* dir = [Direction insertInManagedObjectContext:context];
+			dir.headsign = @"To Hell!";
+			[[line headsignsSet] addObject:dir];
+			
             for( int j = 0; j < kNbStopPerLine; ++j ) {
                 srand( time( NULL ) + i * j );
                 Stop* stop = [stops objectAtIndex:(rand() % (kNbStops - 1))];
@@ -59,10 +128,13 @@ int main (int argc, const char * argv[]) {
 //                    NSLog( @"st.context= %@, line.context= %@", [st managedObjectContext], [line managedObjectContext] );
                     [st setValue:line forKey:@"line"];
                     [st setValue:stop forKey:@"stop"];
-                    st.payload1 = [NSNumber numberWithInt:k];
-                    st.payload2 = [NSNumber numberWithInt:42];
+                    st.arrival = [NSNumber numberWithInt:k];
+                    st.calendar = [NSNumber numberWithInt:0xff];
+					st.direction = dir;
+					st.trip_bearing = @"NW";
                 }
             }
+			flushContext();
             NSLog( @"done with line %d", i );
         }
     } else {
@@ -97,8 +169,8 @@ NSManagedObjectModel *managedObjectModel() {
     }
     
 	NSString *path = [[[NSProcessInfo processInfo] arguments] objectAtIndex:0];
-	path = [path stringByDeletingPathExtension];
-	NSURL *modelURL = [NSURL fileURLWithPath:[path stringByAppendingPathExtension:@"mom"]];
+	path = [path stringByDeletingLastPathComponent];
+	NSURL *modelURL =[NSURL fileURLWithPath:[path stringByAppendingPathComponent:@"Transit.mom"]];
     model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
     return model;
@@ -121,8 +193,8 @@ NSManagedObjectContext *managedObjectContext() {
     NSString *STORE_TYPE = NSSQLiteStoreType;
 	
     NSString *path = [[[NSProcessInfo processInfo] arguments] objectAtIndex:0];
-    path = [path stringByDeletingPathExtension];
-    NSURL *url = [NSURL fileURLWithPath:[path stringByAppendingPathExtension:@"sqlite"]];
+    path = [path stringByDeletingLastPathComponent];
+    NSURL *url = [NSURL fileURLWithPath:[path stringByAppendingPathComponent:@"Transit.sqlite"]];
     
     NSError *error;
     NSPersistentStore *newStore = [coordinator addPersistentStoreWithType:STORE_TYPE configuration:nil URL:url options:nil error:&error];

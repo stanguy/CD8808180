@@ -29,39 +29,133 @@
 
 
 
-@dynamic id;
+@dynamic fgcolor;
 
 
 
-- (int)idValue {
-	NSNumber *result = [self id];
-	return [result intValue];
+
+
+
+@dynamic long_name;
+
+
+
+
+
+
+@dynamic usage;
+
+
+
+
+
+
+@dynamic accessible;
+
+
+
+- (BOOL)accessibleValue {
+	NSNumber *result = [self accessible];
+	return [result boolValue];
 }
 
-- (void)setIdValue:(int)value_ {
-	[self setId:[NSNumber numberWithInt:value_]];
+- (void)setAccessibleValue:(BOOL)value_ {
+	[self setAccessible:[NSNumber numberWithBool:value_]];
 }
 
-- (int)primitiveIdValue {
-	NSNumber *result = [self primitiveId];
-	return [result intValue];
+- (BOOL)primitiveAccessibleValue {
+	NSNumber *result = [self primitiveAccessible];
+	return [result boolValue];
 }
 
-- (void)setPrimitiveIdValue:(int)value_ {
-	[self setPrimitiveId:[NSNumber numberWithInt:value_]];
+- (void)setPrimitiveAccessibleValue:(BOOL)value_ {
+	[self setPrimitiveAccessible:[NSNumber numberWithBool:value_]];
 }
 
 
 
 
 
-@dynamic stops;
+@dynamic bgcolor;
+
+
+
+
+
+
+@dynamic short_name;
+
+
+
+
+
+
+@dynamic forced_id;
+
+
+
+- (short)forced_idValue {
+	NSNumber *result = [self forced_id];
+	return [result shortValue];
+}
+
+- (void)setForced_idValue:(short)value_ {
+	[self setForced_id:[NSNumber numberWithShort:value_]];
+}
+
+- (short)primitiveForced_idValue {
+	NSNumber *result = [self primitiveForced_id];
+	return [result shortValue];
+}
+
+- (void)setPrimitiveForced_idValue:(short)value_ {
+	[self setPrimitiveForced_id:[NSNumber numberWithShort:value_]];
+}
+
+
+
+
+
+@dynamic src_id;
+
+
+
+
+
+
+@dynamic has_picto;
+
+
+
+- (BOOL)has_pictoValue {
+	NSNumber *result = [self has_picto];
+	return [result boolValue];
+}
+
+- (void)setHas_pictoValue:(BOOL)value_ {
+	[self setHas_picto:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveHas_pictoValue {
+	NSNumber *result = [self primitiveHas_picto];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveHas_pictoValue:(BOOL)value_ {
+	[self setPrimitiveHas_picto:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
+@dynamic headsigns;
 
 	
-- (NSMutableSet*)stopsSet {
-	[self willAccessValueForKey:@"stops"];
-	NSMutableSet *result = [self mutableSetValueForKey:@"stops"];
-	[self didAccessValueForKey:@"stops"];
+- (NSMutableSet*)headsignsSet {
+	[self willAccessValueForKey:@"headsigns"];
+	NSMutableSet *result = [self mutableSetValueForKey:@"headsigns"];
+	[self didAccessValueForKey:@"headsigns"];
 	return result;
 }
 	
@@ -73,6 +167,17 @@
 	[self willAccessValueForKey:@"stop_times"];
 	NSMutableSet *result = [self mutableSetValueForKey:@"stop_times"];
 	[self didAccessValueForKey:@"stop_times"];
+	return result;
+}
+	
+
+@dynamic stops;
+
+	
+- (NSMutableSet*)stopsSet {
+	[self willAccessValueForKey:@"stops"];
+	NSMutableSet *result = [self mutableSetValueForKey:@"stops"];
+	[self didAccessValueForKey:@"stops"];
 	return result;
 }
 	

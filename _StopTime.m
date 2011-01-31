@@ -29,57 +29,120 @@
 
 
 
-@dynamic payload1;
+@dynamic arrival;
 
 
 
-- (int)payload1Value {
-	NSNumber *result = [self payload1];
+- (int)arrivalValue {
+	NSNumber *result = [self arrival];
 	return [result intValue];
 }
 
-- (void)setPayload1Value:(int)value_ {
-	[self setPayload1:[NSNumber numberWithInt:value_]];
+- (void)setArrivalValue:(int)value_ {
+	[self setArrival:[NSNumber numberWithInt:value_]];
 }
 
-- (int)primitivePayload1Value {
-	NSNumber *result = [self primitivePayload1];
+- (int)primitiveArrivalValue {
+	NSNumber *result = [self primitiveArrival];
 	return [result intValue];
 }
 
-- (void)setPrimitivePayload1Value:(int)value_ {
-	[self setPrimitivePayload1:[NSNumber numberWithInt:value_]];
+- (void)setPrimitiveArrivalValue:(int)value_ {
+	[self setPrimitiveArrival:[NSNumber numberWithInt:value_]];
 }
 
 
 
 
 
-@dynamic payload2;
+@dynamic trip_id;
 
 
 
-- (int)payload2Value {
-	NSNumber *result = [self payload2];
+- (int)trip_idValue {
+	NSNumber *result = [self trip_id];
 	return [result intValue];
 }
 
-- (void)setPayload2Value:(int)value_ {
-	[self setPayload2:[NSNumber numberWithInt:value_]];
+- (void)setTrip_idValue:(int)value_ {
+	[self setTrip_id:[NSNumber numberWithInt:value_]];
 }
 
-- (int)primitivePayload2Value {
-	NSNumber *result = [self primitivePayload2];
+- (int)primitiveTrip_idValue {
+	NSNumber *result = [self primitiveTrip_id];
 	return [result intValue];
 }
 
-- (void)setPrimitivePayload2Value:(int)value_ {
-	[self setPrimitivePayload2:[NSNumber numberWithInt:value_]];
+- (void)setPrimitiveTrip_idValue:(int)value_ {
+	[self setPrimitiveTrip_id:[NSNumber numberWithInt:value_]];
 }
 
 
 
 
+
+@dynamic calendar;
+
+
+
+- (short)calendarValue {
+	NSNumber *result = [self calendar];
+	return [result shortValue];
+}
+
+- (void)setCalendarValue:(short)value_ {
+	[self setCalendar:[NSNumber numberWithShort:value_]];
+}
+
+- (short)primitiveCalendarValue {
+	NSNumber *result = [self primitiveCalendar];
+	return [result shortValue];
+}
+
+- (void)setPrimitiveCalendarValue:(short)value_ {
+	[self setPrimitiveCalendar:[NSNumber numberWithShort:value_]];
+}
+
+
+
+
+
+@dynamic trip_bearing;
+
+
+
+
+
+
+@dynamic departure;
+
+
+
+- (int)departureValue {
+	NSNumber *result = [self departure];
+	return [result intValue];
+}
+
+- (void)setDepartureValue:(int)value_ {
+	[self setDeparture:[NSNumber numberWithInt:value_]];
+}
+
+- (int)primitiveDepartureValue {
+	NSNumber *result = [self primitiveDeparture];
+	return [result intValue];
+}
+
+- (void)setPrimitiveDepartureValue:(int)value_ {
+	[self setPrimitiveDeparture:[NSNumber numberWithInt:value_]];
+}
+
+
+
+
+
+@dynamic direction;
+
+	
 
 @dynamic line;
 
@@ -91,6 +154,33 @@
 
 
 
+
+
+
++ (NSArray*)fetchStopTimeComing:(NSManagedObjectContext*)moc_ {
+	NSError *error = nil;
+	NSArray *result = [self fetchStopTimeComing:moc_ error:&error];
+	if (error) {
+		NSLog(@"error: %@", error);
+	}
+	return result;
+}
++ (NSArray*)fetchStopTimeComing:(NSManagedObjectContext*)moc_ error:(NSError**)error_ {
+	NSParameterAssert(moc_);
+	NSError *error = nil;
+	
+	NSManagedObjectModel *model = [[moc_ persistentStoreCoordinator] managedObjectModel];
+	
+	NSDictionary *substitutionVariables = [NSDictionary dictionary];
+										
+	NSFetchRequest *fetchRequest = [model fetchRequestFromTemplateWithName:@"StopTimeComing"
+													 substitutionVariables:substitutionVariables];
+	NSAssert(fetchRequest, @"Can't find fetch request named \"StopTimeComing\".");
+	
+	NSArray *result = [moc_ executeFetchRequest:fetchRequest error:&error];
+	if (error_) *error_ = error;
+	return result;
+}
 
 
 @end
